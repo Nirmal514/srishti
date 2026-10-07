@@ -33,12 +33,12 @@ export const Route = createFileRoute("/")({
   ssr: false,
   head: () => ({
     meta: [
-      { title: "SHRISHTI — Plant a seed, unfold a galaxy of knowledge" },
+      { title: "SRISHTI — Plant a seed, unfold a galaxy of knowledge" },
       {
         name: "description",
-        content: "SHRISHTI turns any topic into a living 3D knowledge tree you can explore, question and reason through.",
+        content: "SRISHTI turns any topic into a living 3D knowledge tree you can explore, question and reason through.",
       },
-      { property: "og:title", content: "SHRISHTI — Plant a seed, unfold a galaxy of knowledge" },
+      { property: "og:title", content: "SRISHTI — Plant a seed, unfold a galaxy of knowledge" },
       {
         property: "og:description",
         content: "Enter a seed. Watch it branch into worlds of knowledge. Explore, question, discover.",
@@ -256,7 +256,7 @@ function Shrishti() {
             className="flex flex-1 flex-col items-center justify-center px-6 text-center"
           >
             <p className="eyebrow mb-4">Seed · Unfold · Explore · Discover</p>
-            <h1 className="font-display text-7xl font-light tracking-[0.18em] text-foreground md:text-8xl">SHRISHTI</h1>
+            <h1 className="font-display text-7xl font-light tracking-[0.18em] text-foreground md:text-8xl">SRISHTI</h1>
             <p className="mt-4 max-w-md text-muted-foreground">
               Plant a single idea. Watch it branch into a galaxy of knowledge.
             </p>
