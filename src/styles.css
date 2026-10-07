@@ -1,0 +1,106 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-known: var(--known);
+  --color-probable: var(--probable);
+  --color-possible: var(--possible);
+  --color-uncertain: var(--uncertain);
+  --color-dome: var(--dome);
+}
+
+:root {
+  --radius: 0.375rem;
+  --background: oklch(0.155 0.018 255);
+  --foreground: oklch(0.94 0.018 85);
+  --card: oklch(0.19 0.02 255);
+  --card-foreground: oklch(0.94 0.018 85);
+  --popover: oklch(0.2 0.02 255);
+  --popover-foreground: oklch(0.94 0.018 85);
+  --primary: oklch(0.78 0.09 75);
+  --primary-foreground: oklch(0.17 0.02 255);
+  --secondary: oklch(0.24 0.02 255);
+  --secondary-foreground: oklch(0.9 0.015 85);
+  --muted: oklch(0.22 0.018 255);
+  --muted-foreground: oklch(0.66 0.02 250);
+  --accent: oklch(0.27 0.025 255);
+  --accent-foreground: oklch(0.94 0.018 85);
+  --destructive: oklch(0.62 0.17 28);
+  --destructive-foreground: oklch(0.96 0.01 85);
+  --border: oklch(0.94 0.018 85 / 12%);
+  --input: oklch(0.94 0.018 85 / 16%);
+  --ring: oklch(0.78 0.09 75 / 60%);
+  --known: oklch(0.8 0.09 75);
+  --probable: oklch(0.74 0.07 160);
+  --possible: oklch(0.7 0.06 230);
+  --uncertain: oklch(0.6 0.02 260);
+  --dome: oklch(0.12 0.02 258);
+  --gradient-dome: radial-gradient(120% 90% at 50% 0%, oklch(0.24 0.035 250) 0%, oklch(0.13 0.02 258) 60%, oklch(0.1 0.015 260) 100%);
+  --shadow-dome: 0 40px 80px -40px oklch(0.78 0.09 75 / 18%), inset 0 -1px 0 oklch(0.78 0.09 75 / 35%);
+  --ease-spatial: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+@utility dome-surface {
+  background: var(--gradient-dome);
+  box-shadow: var(--shadow-dome);
+  border-bottom-left-radius: 50% 100%;
+  border-bottom-right-radius: 50% 100%;
+}
+
+@utility grain {
+  background-image: radial-gradient(oklch(0.94 0.018 85 / 4%) 1px, transparent 1px);
+  background-size: 3px 3px;
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted-foreground);
+}
+
+@utility hairline {
+  border: 1px solid var(--color-border);
+}
