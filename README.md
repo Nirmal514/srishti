@@ -1,6 +1,6 @@
-# SHRISHTI
+# SRISHTI
 
-A local-first TanStack Start app for exploring a topic as a branching knowledge system.
+A PROJECT WHERE A SEED TURNES INTO A BRANCHING KNOWLEDGE SYSTEM.
 
 ## Run in VS Code
 
@@ -23,3 +23,5 @@ Install dependencies with `npm install` from the project folder. Add `GEMINI_API
 - React
 - Local file-backed backend
 - Gemini API
+
+THANK YOU
