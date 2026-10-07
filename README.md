@@ -1,4 +1,4 @@
-# SHRISHTI
+# SHISHTI
 
 A local-first TanStack Start app for exploring a topic as a branching knowledge system.
 
