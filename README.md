@@ -40,3 +40,5 @@ npm run dev -- --host 0.0.0.0
 - React
 - Supabase
 - OpenAI-compatible API
+
+THANK YOU
