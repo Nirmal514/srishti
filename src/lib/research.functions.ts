@@ -4,6 +4,7 @@ import { saveSeedForUser } from "@/lib/local-backend";
 import type { QA, Research } from "./shrishti-types";
 
 const DEFAULT_GEMINI_MODEL = 'gemini-3.5-flash';
+const DEFAULT_GEMINI_FALLBACK_MODEL = 'gemini-3.5-flash-lite';
 const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini';
 
 type Schema = Record<string, unknown>;
@@ -76,54 +77,68 @@ async function callAI(system: string, user: string, name: string, schema: Schema
   const { provider, apiKey, baseUrl, model } = resolveAIConfig();
 
   if (provider === 'gemini') {
-    const url = `${baseUrl}/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        system_instruction: {
-          parts: [{ text: system }],
-        },
-        contents: [{ role: 'user', parts: [{ text: user }] }],
-        generationConfig: {
-          temperature: 0.4,
-          responseMimeType: 'application/json',
-        },
-      }),
-    });
+    const fallbackModel = process.env['GEMINI_FALLBACK_MODEL'] || DEFAULT_GEMINI_FALLBACK_MODEL;
+    const models = [...new Set([model, fallbackModel])];
+    let lastError = '';
 
-    if (res.status === 429) throw new Error('Too many requests right now — please wait a moment and try again.');
-    if (!res.ok) {
-      const t = await res.text();
-      console.error('Gemini AI error', res.status, t);
-      let message = `Research failed (${res.status})`;
-      try {
-        const payload = JSON.parse(t) as { error?: { message?: string } };
-        if (payload.error?.message) message = `Gemini API error: ${payload.error.message}`;
-      } catch {
-        if (res.status === 404) {
-          message = `Gemini model "${model}" was not found or is unavailable to this API key. Update GEMINI_MODEL in .env.`;
-        }
-      }
-      throw new Error(message);
-    }
+    for (const [index, currentModel] of models.entries()) {
+      const url = `${baseUrl}/models/${encodeURIComponent(currentModel)}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          system_instruction: {
+            parts: [{ text: system }],
+          },
+          contents: [{ role: 'user', parts: [{ text: user }] }],
+          generationConfig: {
+            temperature: 0.4,
+            responseMimeType: 'application/json',
+          },
+        }),
+      });
 
-    const data = (await res.json()) as {
-      candidates?: Array<{
-        content?: {
-          parts?: Array<{ text?: string }>;
+      if (res.ok) {
+        const data = (await res.json()) as {
+          candidates?: Array<{
+            content?: {
+              parts?: Array<{ text?: string }>;
+            };
+          }>;
         };
-      }>;
-    };
 
-    const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('') ?? '';
-    if (!text) {
-      throw new Error('Gemini returned an empty response.');
+        const text = data.candidates?.[0]?.content?.parts?.map((part) => part.text ?? '').join('') ?? '';
+        if (!text) {
+          throw new Error('Gemini returned an empty response.');
+        }
+
+        return JSON.parse(text);
+      }
+
+      const responseText = await res.text();
+      console.error('Gemini AI error', res.status, responseText);
+      let apiMessage = '';
+      try {
+        const payload = JSON.parse(responseText) as { error?: { message?: string } };
+        apiMessage = payload.error?.message ?? '';
+      } catch {
+        apiMessage = '';
+      }
+
+      const retryable = res.status === 404 || res.status === 429 || res.status >= 500;
+      if (index < models.length - 1 && retryable) {
+        console.warn(`Gemini model ${currentModel} returned ${res.status}; retrying with ${fallbackModel}.`);
+        lastError = apiMessage || `Gemini request failed (${res.status}).`;
+        continue;
+      }
+
+      lastError = apiMessage || `Gemini request failed (${res.status}).`;
+      throw new Error(`Gemini API error: ${lastError}`);
     }
 
-    return JSON.parse(text);
+    throw new Error(`Gemini API error: ${lastError || 'No configured model could complete the request.'}`);
   }
 
   const res = await fetch(`${baseUrl}/chat/completions`, {

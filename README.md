@@ -2,41 +2,24 @@
 
 A local-first TanStack Start app for exploring a topic as a branching knowledge system.
 
-## Local setup
+## Run in VS Code
 
-1. Install dependencies:
+The VS Code workspace opens the parent folder, while the app and `package.json` are in `shrishti/`. Use **Terminal → Run Task → Run SHRISHTI** to start the dev server with the correct working directory.
 
-```sh
-npm install
+From the integrated PowerShell terminal, the equivalent command is:
+
+```powershell
+npm --prefix ".\shrishti" run dev:vscode
 ```
 
-2. Copy the sample environment file and fill in your real credentials:
+If you opened the `shrishti` project folder itself in VS Code, run `npm run dev:vscode` instead. The app is served at `http://localhost:4177/`.
 
-```sh
-cp .env.example .env
-```
-
-3. Add your values in `.env`:
-
-- `VITE_SUPABASE_URL`
-- `VITE_SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_URL`
-- `SUPABASE_PUBLISHABLE_KEY`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- `GEMINI_API_KEY` (preferred)
-- optional `GEMINI_API_BASE` / `GEMINI_MODEL`
-- optional `OPENAI_API_KEY` fallback
-
-4. Start the app:
-
-```sh
-npm run dev -- --host 0.0.0.0
-```
+Install dependencies with `npm install` from the project folder. Add `GEMINI_API_KEY` to the ignored local `.env` file to enable research. The optional `OPENAI_API_KEY` is used as a fallback.
 
 ## Built with
 
 - TanStack Start
 - TypeScript
 - React
-- Supabase
-- OpenAI-compatible API
+- Local file-backed backend
+- Gemini API
